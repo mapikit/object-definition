@@ -1,0 +1,34 @@
+{
+  "name": "object-definition",
+  "version": "1.0.0",
+  "description": "Standard Object Definition For Meta-System",
+  "main": "/dist/index.js",
+  "scripts": {
+    "test": "mocha ./test",
+    "build": "npx tsc"
+  },
+  "mocha": {
+    "require": [
+      "ts-node/register"
+    ],
+    "timeout": 0,
+    "spec": "./test/**/*.ts",
+    "recursive": true
+  },
+  "keywords": [
+    "schema",
+    "object",
+    "type"
+  ],
+  "author": "mapikit",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "@types/chai": "^4.2.22",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^16.11.7",
+    "chai": "^4.3.4",
+    "mocha": "^9.1.3",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.4.4"
+  }
+}
