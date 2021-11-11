@@ -1,6 +1,6 @@
 {
-  "name": "object-definition",
-  "version": "1.0.0",
+  "name": "@meta-system/object-definition",
+  "version": "1.0.1",
   "description": "Standard Object Definition For Meta-System",
   "main": "/dist/index.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "object",
     "type"
   ],
-  "author": "mapikit",
+  "author": "meta-system",
   "license": "GPL-3.0",
   "devDependencies": {
     "@types/chai": "^4.2.22",
