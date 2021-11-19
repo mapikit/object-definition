@@ -3,12 +3,8 @@ import { isObjectDefinition } from "./src/functions/is-object-definition";
 import { validateObject } from "./src/functions/validate-object";
 
 export {
+  isObjectDefinition,
+  validateObject,
   AcceptedTypes,
   ObjectDefinition,
 }
-
-export default {
-  isObjectDefinition,
-  validateObject,
-}
-
