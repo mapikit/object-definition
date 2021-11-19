@@ -1,4 +1,4 @@
-import { ObjectDefinition, TypeDefinitionDeep, TypeDefinitionFlat } from "object-definition-type";
+import { ObjectDefinition, TypeDefinitionDeep, TypeDefinitionFlat } from "../object-definition-type";
 
 const simpleVerificationTypes = ["string", "boolean", "date", "number", "function", "cloudedObject"];
 
