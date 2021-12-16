@@ -1,8 +1,8 @@
 export type AcceptedTypes = TypeDefinitionFlat["type"] | TypeDefinitionDeep["type"];
 
-export type TypeDefinition = TypeDefinitionFlat | TypeDefinitionDeep;
+export type TypeDefinition<T = {}> = TypeDefinitionFlat & T | TypeDefinitionDeep & T;
 
-export type ObjectDefinition = Record<string, TypeDefinition>;
+export type ObjectDefinition<T = {}> = Record<string, TypeDefinition<T>>;
 
 export interface TypeDefinitionFlat {
   type : "string" | "function" | "number" | "boolean" | "date" | "any" | "cloudedObject" | string;
