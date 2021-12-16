@@ -1,6 +1,6 @@
 {
   "name": "@meta-system/object-definition",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Standard Object Definition For Meta-System",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
