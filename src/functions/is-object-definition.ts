@@ -24,10 +24,14 @@ export function isTypeDefinition (input : object) : asserts input is TypeDefinit
     "number",
     "boolean",
     "function",
-    "date",
-    "any",
-    "cloudedObject"
+    "date"
   ];
+
+  const validEspecialTypes = [
+    "any",
+    "cloudedObject",
+    "enum"
+  ]
 
   if (typeof input !== "object" || Array.isArray(input)) {
     throw Error(error(Errors.WrongTypeObject) + ` - ${input}`);
@@ -39,7 +43,7 @@ export function isTypeDefinition (input : object) : asserts input is TypeDefinit
 
   if (input["type"][0] !== "$") {
 
-    if (!validNonReferencialTypes.includes(input["type"])) {
+    if (![...validNonReferencialTypes, ...validEspecialTypes].includes(input["type"])) {
       throw Error(error(Errors.UnknownType) + ` - "${highlight(input["type"])}"`);
     }
   }
@@ -48,10 +52,29 @@ export function isTypeDefinition (input : object) : asserts input is TypeDefinit
     throw Error(error(Errors.RequiredNotBoolean + ` - ${input["required"]}`));
   }
 
-  const deepObjectTypes = ["object", "array"];
+  const deepObjectTypes = ["object", "array", "enum"];
   if (deepObjectTypes.includes(input["type"])) {
-    if (input["type"] === "object" || typeof input["subtype"] === "object") {
+    if (input["type"] === "object") {
+      if (typeof input["subtype"] !== "object" || Array.isArray(input["subtype"])) {
+        throw Error(error(Errors.ObjectTypeSubtype))
+      }
+
       return isObjectDefinition(input["subtype"]);
+    }
+
+    if (input["type"] === "enum") {
+      const validEnumTypes = ["string", "number"]
+      if (!Array.isArray(input["subtype"])) {
+        throw Error(error(Errors.SubtypeNotArray))
+      }
+
+      input["subtype"].forEach((value) => {
+        if (!validEnumTypes.includes(typeof value)) {
+          throw Error(error(Errors.InvalidTypeOfItemInArray + ` - got "${typeof value}"`))
+        }
+      })
+
+      return;
     }
 
     if (input["subtype"] === undefined) {
@@ -60,7 +83,7 @@ export function isTypeDefinition (input : object) : asserts input is TypeDefinit
 
     if (input["subtype"][0] !== "$") {
       if (!validNonReferencialTypes.includes(input["subtype"])) {
-        throw Error(error(Errors.UnknownType) + ` - "${highlight(input["subtype"])}"`);
+        throw Error(error(Errors.InvalidArrayType) + ` - got "${highlight(input["subtype"])}" instead`);
       }
     }
   }

@@ -1,4 +1,4 @@
-import { ObjectDefinition, TypeDefinitionDeep, TypeDefinitionFlat } from "../object-definition-type";
+import { ObjectDefinition, TypeDefinitionDeep, TypeDefinitionEnum, TypeDefinitionFlat } from "../object-definition-type";
 
 const simpleVerificationTypes = ["string", "boolean", "date", "number", "function", "cloudedObject"];
 
@@ -55,6 +55,16 @@ export const validateObject = (
 
         errors.push(...validateObject(element, subtype, `${cumulativePath}${key}.${index}.`).errors);
       })
+
+      continue;
+    }
+
+    if (typeDefinition.type === "enum") {
+      const validValues = (typeDefinition as TypeDefinitionEnum).subtype;
+
+      if (!validValues.includes(objectToValidate[key])) {
+        errors.push({ path: `${cumulativePath}${key}`, error: `Enum values not respected: ["${validValues.join('", "')}"] - got <${objectToValidate[key]}>` })
+      }
     }
   }
 
