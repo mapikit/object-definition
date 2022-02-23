@@ -115,8 +115,7 @@ describe("Validation of objects against their type definitions", () => {
       name: "Roger Connor",
       age: 24,
       married: 1,
-      job: {
-        weeksEmployed: 35,
+      job: { // Ommited weeks employed, should not throw
         name: "Delivery Guy",
         employmentStart: "potato",
         employmentEnd: true
@@ -134,7 +133,7 @@ describe("Validation of objects against their type definitions", () => {
         weeksEmployed: { type: "number" },
         name: { type: "string" },
         employmentStart: { type: "date", required: false },
-        employmentEnd: { type: "date", required: false }
+        employmentEnd: { type: "date", required: true }
       }},
       hobbies: { type: "array", subtype: "string" }
     };

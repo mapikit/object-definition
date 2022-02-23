@@ -89,4 +89,24 @@ describe("ENUMs", () => {
 
     expect(errors[0].path).to.be.equal("status")
   });
+
+  it("Validates missing enum not required", () => {
+    const objDef = {
+      "status": { type: "enum", subtype: ["created", "running", "stopped"] }
+    }
+
+    const validObjectList = [
+      {},
+      {},
+      { "status": "Rice is nice" }
+    ];
+
+    let errors = [];
+
+    validObjectList.forEach((obj) => {
+      errors.push(...validateObject(obj, objDef).errors);
+    });
+
+    expect(errors.length).to.be.equal(1)
+  });
 });

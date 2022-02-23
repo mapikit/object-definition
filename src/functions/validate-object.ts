@@ -6,7 +6,7 @@ type ValidationOutput = {
   errors : Array<{ path : string, error : string }>
 }
 
-/** Validates Objects against an object definition, returning `true` if the objectDefinition is respected
+/** Validates Objects against an object definition, returning an array of errors - which may be empty if there are none.
  * 
  * This function does not support types references to other object definitions, like `"type": "$reference"`
  */
@@ -18,20 +18,39 @@ export const validateObject = (
   const definitionKeys = Object.keys(definition);
   const errors : ValidationOutput["errors"] = [];
 
+  const encapsulateRequire = (value : unknown, isRequired : boolean, rule : boolean, possibleErrors : ValidationOutput["errors"]) =>  {
+    if (isRequired) {
+      if (!rule) {
+        return errors.push(...possibleErrors)
+      }
+    }
+    
+    if (value !== undefined && !rule) {
+      errors.push(...possibleErrors)
+    }
+  };
+
   for (const key of definitionKeys) {
     const typeDefinition = definition[key];
 
     if (simpleVerificationTypes.includes(typeDefinition.type)) {
       const isValid = validateFlatTypeDefinition(objectToValidate[key], typeDefinition);
       if (!isValid) {
-        errors.push({ path: `${cumulativePath}${key}`, error: `Type not respected: ${typeDefinition.type}` })
+        errors.push({ path: `${cumulativePath}${key}`, error: `Type not respected: ${typeDefinition.type} - got <${typeof objectToValidate[key]}>` })
       }
       continue;
     }
 
     if (typeDefinition.type === "object") {
       const subtype = (typeDefinition as TypeDefinitionDeep).subtype as ObjectDefinition;
-      errors.push(...validateObject(objectToValidate[key], subtype, `${cumulativePath}${key}.`).errors)
+      const computedResult = validateObject(objectToValidate[key], subtype, `${cumulativePath}${key}.`).errors;
+      encapsulateRequire(
+        objectToValidate[key],
+        typeDefinition.required,
+        computedResult.length === 0,
+        computedResult
+      );
+
       continue;
     }
 
@@ -40,15 +59,24 @@ export const validateObject = (
       const property = objectToValidate[key];
       const isArray = Array.isArray(property);
 
+      if (typeDefinition.required && typeof property === "undefined") {
+        errors.push({ path: `${cumulativePath}${key}`, error: `Type not respected: ${typeDefinition.type} - got <${typeof objectToValidate[key]}>` });
+        continue;
+      }
+
+      if (!!typeDefinition.required === false && typeof property === "undefined") {
+        continue;
+      }
+
       if (!isArray) {
-        errors.push({ path: `${cumulativePath}${key}`, error: `Type not respected: ${typeDefinition.type}` })
+        errors.push({ path: `${cumulativePath}${key}`, error: `Type not respected: ${typeDefinition.type} - got <${typeof objectToValidate[key]}>` });
         continue;
       }
 
       property.forEach((element, index) => {
         if (typeof subtype === "string") {
           if (!validateFlatTypeDefinition(element, { type: subtype })) {
-            errors.push({ path: `${cumulativePath}${key}.${index}`, error: `Array subtype not respected: ${subtype}` })
+            errors.push({ path: `${cumulativePath}${key}.${index}`, error: `Array subtype not respected: ${subtype} - got <${typeof element}>` })
           };
           return;
         }
@@ -62,9 +90,12 @@ export const validateObject = (
     if (typeDefinition.type === "enum") {
       const validValues = (typeDefinition as TypeDefinitionEnum).subtype;
 
-      if (!validValues.includes(objectToValidate[key])) {
-        errors.push({ path: `${cumulativePath}${key}`, error: `Enum values not respected: ["${validValues.join('", "')}"] - got <${objectToValidate[key]}>` })
-      }
+      encapsulateRequire(
+        objectToValidate[key],
+        typeDefinition.required,
+        validValues.includes(objectToValidate[key]),
+        [{ path: `${cumulativePath}${key}`, error: `Enum values not respected: ["${validValues.join('", "')}"] - got <${objectToValidate[key]}>` }]
+      )
     }
   }
 
@@ -73,7 +104,11 @@ export const validateObject = (
 
 const validateFlatTypeDefinition = (property : unknown, typeDefinition : TypeDefinitionFlat) : boolean => {
   const type = typeof property;
-  const isRequired = !(typeDefinition.required === false || typeDefinition.required === undefined)
+  const isRequired = !!typeDefinition.required;
+
+  if (type === "undefined" && isRequired) {
+    return false;
+  }
 
   if (type === "undefined" && !isRequired) {
     return true;
@@ -90,4 +125,4 @@ const validateFlatTypeDefinition = (property : unknown, typeDefinition : TypeDef
   if (typeDefinition.type === "cloudedObject") {
     return type === "object" && Array.isArray(property) === false;
   }
-} 
+};
