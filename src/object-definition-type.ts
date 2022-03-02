@@ -6,12 +6,12 @@ export type TypeDefinition<T = {}> = TypeDefinitionFlat & T | TypeDefinitionDeep
 export type ObjectDefinition<T = {}> = Record<string, TypeDefinition<T>>;
 
 export interface TypeDefinitionFlat {
-  type : "string" | "function" | "number" | "boolean" | "date" | string;
+  type : "string" | "function" | "number" | "boolean" | "date" | "cloudedObject" | string;
   required ?: boolean;
 }
 
 export interface TypeDefinitionEspecial {
-  type : "any" | "cloudedObject";
+  type : "any";
   required ?: boolean;
 }
 

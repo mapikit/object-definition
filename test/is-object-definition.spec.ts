@@ -12,15 +12,26 @@ describe("Arrays", () => {
 
     expect(validation).to.throw();
   });
-  it("Arrays of cloudedObject should not be valid", () => {
+  it("Arrays of ENUM should not be valid", () => {
     const objDef = {
-      "arrParam" : { type: "array", subtype: "cloudedObject" }
+      "arrParam" : { type: "array", subtype: "enum" }
     }
 
     const validation = () => isObjectDefinition(objDef);
 
     expect(validation).to.throw();
   });
+
+  it("Arrays of subtype Array should not be valid", () => {
+    const objDef = {
+      "arrParam" : { type: "array", subtype: [ "alfredo" ] }
+    }
+
+    const validation = () => isObjectDefinition(objDef);
+
+    expect(validation).to.throw();
+  });
+
   it("Arrays of any other valid type should be valid", () => {
     const objDef = {
       "arrParam" : { type: "array", subtype: "string" }

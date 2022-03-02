@@ -24,12 +24,12 @@ export function isTypeDefinition (input : object) : asserts input is TypeDefinit
     "number",
     "boolean",
     "function",
+    "cloudedObject",
     "date"
   ];
 
   const validEspecialTypes = [
     "any",
-    "cloudedObject",
     "enum"
   ]
 
