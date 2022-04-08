@@ -82,6 +82,10 @@ export function isTypeDefinition (input : object) : asserts input is TypeDefinit
     }
 
     if (input["subtype"][0] !== "$") {
+      if (typeof input["subtype"] === "object") {
+        return isObjectDefinition(input["subtype"]);
+      }
+
       if (!validNonReferencialTypes.includes(input["subtype"])) {
         throw Error(error(Errors.InvalidArrayType) + ` - got "${highlight(input["subtype"])}" instead`);
       }

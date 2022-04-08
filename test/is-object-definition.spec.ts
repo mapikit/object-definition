@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import { isObjectDefinition } from "../src/functions/is-object-definition";
 import { validateObject } from "../src/functions/validate-object";
+import { stubDefinition1, stubDefinition2 } from "./data/stub-definitions";
 
 describe("Arrays", () => {
   it("Arrays of ANY should not be valid", () => {
@@ -121,3 +122,17 @@ describe("ENUMs", () => {
     expect(errors.length).to.be.equal(1)
   });
 });
+
+
+describe("General", () => {
+  it("Passes Stub1" , () => {
+    const validation = () => isObjectDefinition(stubDefinition1);
+
+    expect(validation).to.not.throw();
+  });
+  it("Passes Stub2" , () => {
+    const validation = () => isObjectDefinition(stubDefinition2);
+
+    expect(validation).to.not.throw();
+  });
+})
