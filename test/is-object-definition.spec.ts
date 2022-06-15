@@ -74,7 +74,7 @@ describe("ENUMs", () => {
       { "status": "running" }
     ];
 
-    let errors = [];
+    let errors : Array<{ path : string, error : string }> = [];
 
     validObjectList.forEach((obj) => {
       errors.push(...validateObject(obj, objDef).errors);
@@ -93,7 +93,7 @@ describe("ENUMs", () => {
       { "status": "running" }
     ];
 
-    let errors = [];
+    let errors : Array<{ path : string, error : string }> = [];
 
     validObjectList.forEach((obj) => {
       errors.push(...validateObject(obj, objDef).errors);
@@ -113,7 +113,7 @@ describe("ENUMs", () => {
       { "status": "Rice is nice" }
     ];
 
-    let errors = [];
+    let errors : Array<{ path : string, error : string }> = [];
 
     validObjectList.forEach((obj) => {
       errors.push(...validateObject(obj, objDef).errors);
