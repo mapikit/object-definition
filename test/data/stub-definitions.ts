@@ -41,3 +41,10 @@ export const stubDefinition2 : ObjectDefinition = {
     }
   }
 }
+
+export const stubDefinitionEnum : ObjectDefinition = {
+  "enumProp": {
+    type: "enum",
+    subtype: [ "propName1", "abcd", "test" ]
+  }
+}

@@ -28,6 +28,12 @@ const templateObjDefinition3 : ObjectDefinition = {
   }
 }
 
+const templateObjDefinition4 : ObjectDefinition = {
+  deepProp : { type: "object", subtype: {
+    innerpropEnum: { type: "enum", subtype: ["1", "2", "3"] }
+  } }
+}
+
 const badTemplateDefinition = {
   propName1: "string"
 };
@@ -48,10 +54,15 @@ const badTemplateDefinition5 = {
   prop1: { type: "object", required: false } // missing subtype
 }
 
+const badTemplateDefinition6 = {
+  prop1: { type: "enum" }
+}
+
 const goodObjectDefinitions : ObjectDefinition[] = [
   templateObjDefinition1,
   templateObjDefinition2,
-  templateObjDefinition3
+  templateObjDefinition3,
+  templateObjDefinition4
 ];
 
 const badObjectDefinitions : object[] = [
@@ -59,7 +70,8 @@ const badObjectDefinitions : object[] = [
   badTemplateDefinition2,
   badTemplateDefinition3,
   badTemplateDefinition4,
-  badTemplateDefinition5
+  badTemplateDefinition5,
+  badTemplateDefinition6
 ];
 
 describe("Object Definition Validation", () => {
