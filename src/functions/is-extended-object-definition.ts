@@ -1,6 +1,6 @@
-import { error, highlight } from "../chalk-formatting";
-import { ObjectDefinition, TypeDefinition } from "../object-definition-type";
-import { Errors } from "../errors";
+import { error, highlight } from "../chalk-formatting.js";
+import { ObjectDefinition, TypeDefinition } from "../object-definition-type.js";
+import { Errors } from "../errors.js";
 
 export function isExtendedObjectDefinition (input : object, extendedKeysAndTypes : Array<{key : string, type : string}>)
 : asserts input is ObjectDefinition {

@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { isObjectDefinition } from "../src/functions/is-object-definition";
-import { validateObject } from "../src/functions/validate-object";
-import { stubDefinition1, stubDefinition2, stubDefinitionEnum } from "./data/stub-definitions";
+import { isObjectDefinition } from "../src/functions/is-object-definition.js";
+import { validateObject } from "../src/functions/validate-object.js";
+import { stubDefinition1, stubDefinition2, stubDefinitionEnum } from "./data/stub-definitions.js";
 
 describe("Arrays", () => {
   it("Arrays of ANY should not be valid", () => {

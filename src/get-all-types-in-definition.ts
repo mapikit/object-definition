@@ -1,4 +1,4 @@
-import { ObjectDefinition, TypeDefinition, TypeDefinitionDeep } from "./object-definition-type"
+import { ObjectDefinition, TypeDefinition, TypeDefinitionDeep } from "./object-definition-type.js"
 
 const deepTypesType = ["object", "array"];
 

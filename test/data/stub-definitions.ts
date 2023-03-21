@@ -1,4 +1,4 @@
-import { ObjectDefinition } from "../../src/object-definition-type";
+import type { ObjectDefinition } from "../../src/object-definition-type.js";
 
 export const stubDefinition1 : ObjectDefinition = {
   "aProp": {

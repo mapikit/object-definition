@@ -1,6 +1,6 @@
-import { ObjectDefinition } from "../src/object-definition-type";
-import { isObjectDefinition } from "../src/functions/is-object-definition";
-import { validateObject } from "../src/functions/validate-object";
+import { ObjectDefinition } from "../src/object-definition-type.js";
+import { isObjectDefinition } from "../src/functions/is-object-definition.js";
+import { validateObject } from "../src/functions/validate-object.js";
 import { expect } from "chai";
 
 const templateObjDefinition1 : ObjectDefinition = {
