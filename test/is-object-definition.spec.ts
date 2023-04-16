@@ -141,3 +141,53 @@ describe("General", () => {
     expect(validation).to.not.throw();
   })
 })
+
+describe("Type Unions", () => {
+  it("Validates correctly a valid shallow type union", () => {
+    const unionObjDef = {
+      prop: [
+        { type: "string" },
+        { type: "number" }
+      ]
+    };
+
+    const validation = () => isObjectDefinition(unionObjDef)
+
+    expect(validation).to.not.throw();
+  })
+  it("Validates correctly a valid deep type union", () => {
+    const unionObjDef = {
+      deepProp: {
+        type: "array", subtype: {
+          inner: [
+            { type: "string", required: false },
+            { type: "object", subtype: {
+              evenInnerer: { type: "boolean" }
+            } }
+          ]
+        } 
+      }
+    };
+
+    const validation = () => isObjectDefinition(unionObjDef)
+
+    expect(validation).to.not.throw();
+  })
+
+  it("Validates an INVALID deep type union", () => {
+    const unionObjDef = {
+      deepProp: {
+        type: "array", subtype: {
+          inner: [
+            { type: "string", required: false },
+            { element: { type: "string" } }
+          ]
+        } 
+      }
+    };
+
+    const validation = () => isObjectDefinition(unionObjDef)
+
+    expect(validation).to.throw();
+  })
+});

@@ -1,5 +1,5 @@
 import { error, highlight } from "../chalk-formatting.js";
-import { ObjectDefinition, TypeDefinition } from "../object-definition-type.js";
+import { ObjectDefinition, TypeDefinition, TypeDefinitionUnion } from "../object-definition-type.js";
 import { Errors } from "../errors.js";
 
 export function isObjectDefinition (input : object) : asserts input is ObjectDefinition {
@@ -14,6 +14,12 @@ export function isObjectDefinition (input : object) : asserts input is ObjectDef
   typeDefinitions.forEach((typeDefinition) => {
     isTypeDefinition(typeDefinition);
   })
+}
+
+function isTypeDefinitionUnion (input : Array<object>) : asserts input is TypeDefinitionUnion {
+  for (let inputType of input) {
+    isTypeDefinition(inputType)
+  }
 }
 
 export function isTypeDefinition (input : object) : asserts input is TypeDefinition {
@@ -33,7 +39,12 @@ export function isTypeDefinition (input : object) : asserts input is TypeDefinit
     "enum"
   ]
 
-  if (typeof input !== "object" || Array.isArray(input)) {
+  if (Array.isArray(input)) {
+    isTypeDefinitionUnion(input);
+    return;
+  }
+
+  if (typeof input !== "object") {
     throw Error(error(Errors.WrongTypeObject) + ` - ${input}`);
   }
 

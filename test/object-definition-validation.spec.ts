@@ -163,4 +163,27 @@ describe("Validation of objects against their type definitions", () => {
       expect(result.errors.find((error) => errorPath === error.path)).to.not.be.undefined;
     })
   });
+});
+
+describe("Type Union validation", () => {
+  it("Shallow Type union validation", (() => {
+    const unionObjDef : ObjectDefinition = {
+      prop: [
+        { type: "string" },
+        { type: "number" }
+      ]
+    };
+
+    const objects = [
+      { prop: "hello" },
+      { prop: 22 },
+      { prop: true }
+    ];
+
+    const errors = new Map()
+    objects.forEach((obj, index) => {
+      errors.set(index, validateObject(obj, unionObjDef).errors)
+    });
+    expect(errors.get(2)[0].path).to.be.equal('prop')
+  }))
 })
