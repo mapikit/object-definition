@@ -8,13 +8,19 @@ export type ObjectDefinition<T = {}> = Record<string, TypeDefinition<T> | TypeDe
 export type TypeDefinitionUnion<T = {}> = Array<TypeDefinition<T>>
 
 export interface TypeDefinitionFlat {
-  type : "string" | "function" | "number" | "boolean" | "date" | "cloudedObject" | string;
+  type : "string" | "number" | "boolean" | "date" | "cloudedObject" | string;
   required ?: boolean;
 }
 
 export interface TypeDefinitionEspecial {
   type : "any";
   required ?: boolean;
+}
+
+export interface TypeDefinitionExecutable {
+  type : "function";
+  input : ObjectDefinition;
+  output : ObjectDefinition;
 }
 
 export interface TypeDefinitionDeep {

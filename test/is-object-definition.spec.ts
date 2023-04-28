@@ -2,6 +2,7 @@ import { expect } from "chai";
 import { isObjectDefinition } from "../src/functions/is-object-definition.js";
 import { validateObject } from "../src/functions/validate-object.js";
 import { stubDefinition1, stubDefinition2, stubDefinitionEnum } from "./data/stub-definitions.js";
+import { ObjectDefinition } from "../src/object-definition-type.js";
 
 describe("Arrays", () => {
   it("Arrays of ANY should not be valid", () => {
@@ -168,6 +169,12 @@ describe("Type Unions", () => {
         } 
       }
     };
+
+    // TODO: Enable custom validators
+    const schemaObjDef : ObjectDefinition = {
+      "format": { type: "__ObjDef__", required: true },
+      "2": [{ type: "nullish", required: true }, { type: "string", required: true }], // Null or undefined or string
+    }
 
     const validation = () => isObjectDefinition(unionObjDef)
 

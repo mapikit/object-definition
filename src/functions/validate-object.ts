@@ -6,6 +6,13 @@ type ValidationOutput = {
   errors : Array<{ path : string, error : string }>
 }
 
+export const validateObject = (
+  objectToValidate : unknown,
+  definition : ObjectDefinition,
+) : ValidationOutput => {
+  return validationObjectCycle(objectToValidate, definition);
+}
+
 const validateForType = (typeDefinition : TypeDefinition, key : string, objectToValidate: unknown, cumulativePath = "", errors = []) => {
   if (simpleVerificationTypes.includes(typeDefinition.type)) {
     const isValid = validateFlatTypeDefinition(objectToValidate[key], typeDefinition);
@@ -17,7 +24,7 @@ const validateForType = (typeDefinition : TypeDefinition, key : string, objectTo
 
   if (typeDefinition.type === "object") {
     const subtype = (typeDefinition as TypeDefinitionDeep).subtype as ObjectDefinition;
-    const computedResult = validateObject(objectToValidate[key], subtype, `${cumulativePath}${key}.`).errors;
+    const computedResult = validationObjectCycle(objectToValidate[key], subtype, `${cumulativePath}${key}.`).errors;
     encapsulateRequire(
       objectToValidate[key],
       typeDefinition.required,
@@ -56,7 +63,7 @@ const validateForType = (typeDefinition : TypeDefinition, key : string, objectTo
         return;
       }
 
-      errors.push(...validateObject(element, subtype, `${cumulativePath}${key}.${index}.`).errors);
+      errors.push(...validationObjectCycle(element, subtype, `${cumulativePath}${key}.${index}.`).errors);
     })
 
     return;
@@ -87,11 +94,13 @@ const encapsulateRequire = (value : unknown, isRequired : boolean, rule : boolea
   }
 };
 
+// validateObject({}, {}, "", [{ path: "schemas.identifier", validator: (value) => { ;} }])
+
 /** Validates Objects against an object definition, returning an array of errors - which may be empty if there are none.
  * 
  * This function does not support types references to other object definitions, like `"type": "$reference"`
  */
-export const validateObject = (
+const validationObjectCycle = (
   objectToValidate : unknown,
   definition : ObjectDefinition,
   cumulativePath : string = "",
