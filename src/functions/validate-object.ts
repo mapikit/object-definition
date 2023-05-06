@@ -1,6 +1,7 @@
-import { ObjectDefinition, TypeDefinition, TypeDefinitionDeep, TypeDefinitionEnum, TypeDefinitionFlat } from "../object-definition-type.js";
+import { ObjectDefinition, TypeDefinition, TypeDefinitionDeep, TypeDefinitionEnum, TypeDefinitionExecutable, TypeDefinitionFlat } from "../object-definition-type.js";
 
 const simpleVerificationTypes = ["string", "boolean", "date", "number", "function", "cloudedObject"];
+// Although function has "deep" typings we can't validate the types without actually running the function.
 
 type ValidationOutput = {
   errors : Array<{ path : string, error : string }>

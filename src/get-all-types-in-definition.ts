@@ -13,19 +13,22 @@ export const getAllTypesInDefinition = (objectDefinition : ObjectDefinition) : s
   const result = []
   
   typeDefinitions.forEach((typeDefinition) => {
-    if (deepTypesType.includes(typeDefinition.type)) {
-      isDeepDefinition(typeDefinition);
+    const listedTypes = Array.isArray(typeDefinition) ? typeDefinition : [typeDefinition];
+    listedTypes.forEach((aTypeDefinition) => {
+      if (deepTypesType.includes(aTypeDefinition.type)) {
+        isDeepDefinition(aTypeDefinition);
 
-      if (typeof typeDefinition.subtype === "string") {
-        result.push(typeDefinition.subtype);
+        if (typeof aTypeDefinition.subtype === "string") {
+          result.push(aTypeDefinition.subtype);
+          return;
+        }
+
+        result.push(...getAllTypesInDefinition(aTypeDefinition.subtype));
         return;
       }
 
-      result.push(...getAllTypesInDefinition(typeDefinition.subtype));
-      return;
-    }
-
-    result.push(typeDefinition.type)
+      result.push(aTypeDefinition.type)
+    })
   });
 
   return result

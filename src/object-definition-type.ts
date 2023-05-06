@@ -1,7 +1,7 @@
 export type AcceptedTypes = TypeDefinitionFlat["type"] | TypeDefinitionDeep["type"];
 
 export type TypeDefinition<T = {}> = TypeDefinitionFlat & T | TypeDefinitionDeep & T
-  | TypeDefinitionEnum & T | TypeDefinitionEspecial & T;
+  | TypeDefinitionEnum & T | TypeDefinitionEspecial & T | TypeDefinitionExecutable & T;
 
 export type ObjectDefinition<T = {}> = Record<string, TypeDefinition<T> | TypeDefinitionUnion<T>>;
 

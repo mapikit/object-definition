@@ -2,6 +2,7 @@ import { ObjectDefinition } from "../src/object-definition-type.js";
 import { isObjectDefinition } from "../src/functions/is-object-definition.js";
 import { validateObject } from "../src/functions/validate-object.js";
 import { expect } from "chai";
+import { stubDefinitionFunction } from "./data/stub-definitions.js";
 
 const templateObjDefinition1 : ObjectDefinition = {
   property1: { type: "string", required: false },
@@ -163,6 +164,16 @@ describe("Validation of objects against their type definitions", () => {
       expect(result.errors.find((error) => errorPath === error.path)).to.not.be.undefined;
     })
   });
+
+  it("Test Function Validation", () => {
+    const object = {
+      funcProp: () => {}
+    }
+
+    const result = validateObject(object, stubDefinitionFunction);
+
+    expect(result.errors.length).to.equal(0);
+  })
 });
 
 describe("Type Union validation", () => {

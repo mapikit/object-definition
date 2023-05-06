@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { isObjectDefinition } from "../src/functions/is-object-definition.js";
 import { validateObject } from "../src/functions/validate-object.js";
-import { stubDefinition1, stubDefinition2, stubDefinitionEnum } from "./data/stub-definitions.js";
+import { stubDefinition1, stubDefinition2, stubDefinitionEnum, stubDefinitionFunction } from "./data/stub-definitions.js";
 import { ObjectDefinition } from "../src/object-definition-type.js";
 
 describe("Arrays", () => {
@@ -140,7 +140,14 @@ describe("General", () => {
     const validation = () => isObjectDefinition(stubDefinitionEnum);
 
     expect(validation).to.not.throw();
-  })
+  });
+  it("Passes Stub3 (Functions)", () => {
+    const validation = () => isObjectDefinition(stubDefinitionFunction);
+
+    isObjectDefinition(stubDefinitionFunction)
+
+    expect(validation).to.not.throw();
+  });
 })
 
 describe("Type Unions", () => {

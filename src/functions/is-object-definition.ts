@@ -29,14 +29,14 @@ export function isTypeDefinition (input : object) : asserts input is TypeDefinit
     "string",
     "number",
     "boolean",
-    "function",
     "cloudedObject",
     "date"
   ];
 
   const validEspecialTypes = [
     "any",
-    "enum"
+    "enum",
+    "function"
   ]
 
   if (Array.isArray(input)) {
@@ -63,7 +63,7 @@ export function isTypeDefinition (input : object) : asserts input is TypeDefinit
     throw Error(error(Errors.RequiredNotBoolean + ` - ${input["required"]}`));
   }
 
-  const deepObjectTypes = ["object", "array", "enum"];
+  const deepObjectTypes = ["object", "array", "enum", "function"];
   if (deepObjectTypes.includes(input["type"])) {
     if (input["type"] === "object") {
       if (typeof input["subtype"] !== "object" || Array.isArray(input["subtype"])) {
@@ -85,6 +85,12 @@ export function isTypeDefinition (input : object) : asserts input is TypeDefinit
         }
       })
 
+      return;
+    }
+
+    if (input["type"] === "function") {
+      isObjectDefinition(input["input"]);
+      isObjectDefinition(input["output"]);
       return;
     }
 
