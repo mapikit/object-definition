@@ -1,6 +1,7 @@
 import { error, highlight } from "../chalk-formatting.js";
 import { ObjectDefinition, TypeDefinition, TypeDefinitionUnion } from "../object-definition-type.js";
 import { Errors } from "../errors.js";
+import { CUSTOM_TYPES } from "../custom-types.js";
 
 export function isObjectDefinition (input : object) : asserts input is ObjectDefinition {
   if (typeof input !== "object" || Array.isArray(input)) {
@@ -52,8 +53,8 @@ export function isTypeDefinition (input : object) : asserts input is TypeDefinit
     throw Error(error(Errors.TypeNotString + ` - ${input["type"]}`));
   }
 
-  if (input["type"][0] !== "$") {
-
+  const customTypeValues = Object.values(CUSTOM_TYPES);
+  if (!customTypeValues.includes(input["type"])) {
     if (![...validNonReferencialTypes, ...validEspecialTypes].includes(input["type"])) {
       throw Error(error(Errors.UnknownType) + ` - "${highlight(input["type"])}"`);
     }
