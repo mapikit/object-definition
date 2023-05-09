@@ -174,6 +174,114 @@ describe("Validation of objects against their type definitions", () => {
 
     expect(result.errors.length).to.equal(0);
   })
+
+  it("Custom Type Validation - Success", () => {
+    const definition : ObjectDefinition = {
+      format: { "type": "__%objdef%__", required: true },
+      name: { "type": "string" }
+    }
+
+    const goodObject = {
+      format: { "myKey": { "type": "number", required: true } },
+      name: "goodObject"
+    }
+
+    const result = validateObject(goodObject, definition);
+
+    expect(result.errors.length).to.be.equal(0);
+  })
+
+  it("Custom Type Validation - Failure", () => {
+    const definition : ObjectDefinition = {
+      format: { "type": "__%objdef%__", required: true },
+      key: { "type": "object", subtype: {
+        deepFormat: {
+          type: "__%objdef%__", required: true,
+        }
+      }}
+    }
+
+    const badObject = {
+      format: {
+        "myKey": { "type": "number", required: true },
+        "wrongKey": "i'm wrong here"
+      },
+      key: {
+        deepFormat: {
+          "anotha": { "type": "string" },
+          "wrongHere": true
+        }
+      }
+    }
+
+    const result = validateObject(badObject, definition);
+
+    expect(result.errors.length).to.be.equal(2);
+    expect(result.errors[0].path).to.be.equal("format");
+    expect(result.errors[1].path).to.be.equal("key.deepFormat");
+  });
+
+  describe.only("Custom Type Validation + Type Union", () => {
+    const definition : ObjectDefinition = {
+      key: { "type": "object", subtype: {
+        deepFormat: [{
+          type: "__%objdef%__", required: true,
+        }, { type: "string", required: false }]
+      }}
+    }
+
+    const badObject1 = {
+      key: {
+        deepFormat: {
+          "anotha": { "type": "string" },
+          "wrongHere": true
+        }
+      }
+    }
+
+    const badObject2 = {
+      key: {
+        deepFormat: true
+      }
+    }
+
+    const goodObject1 = {
+      key: {}
+    }
+
+    const goodObject2 = {
+      key: {
+        deepFormat: "hello"
+      }
+    }
+
+    it("BadObject 1", () => {
+      const result = validateObject(badObject1, definition);
+
+      expect(result.errors.length).to.be.equal(1);
+      expect(result.errors[0].path).to.be.equal("key.deepFormat");
+    });
+
+    it("BadObject 2", () => {
+      const result = validateObject(badObject2, definition);
+
+      expect(result.errors.length).to.be.equal(1);
+      expect(result.errors[0].path).to.be.equal("key.deepFormat");
+      expect(result.errors[0].error).to.be.equal("Type not respected: string - got <boolean>");
+    });
+
+    it("Good Object 1", () => {
+      const result = validateObject(goodObject2, definition);
+
+      expect(result.errors.length).to.be.equal(0);
+    });
+
+    it("Good Object 2", () => {
+      const result = validateObject(goodObject1, definition);
+
+      expect(result.errors.length).to.be.equal(0);
+    });
+  })
 });
 
 describe("Type Union validation", () => {

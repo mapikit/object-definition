@@ -1,10 +1,12 @@
+import { CUSTOM_TYPES, customTypesValidations } from "../custom-types.js";
 import { ObjectDefinition, TypeDefinition, TypeDefinitionDeep, TypeDefinitionEnum, TypeDefinitionExecutable, TypeDefinitionFlat } from "../object-definition-type.js";
 
 const simpleVerificationTypes = ["string", "boolean", "date", "number", "function", "cloudedObject"];
 // Although function has "deep" typings we can't validate the types without actually running the function.
 
-type ValidationOutput = {
-  errors : Array<{ path : string, error : string }>
+export type ValidationError = { path : string, error : string };
+export type ValidationOutput = {
+  errors : Array<ValidationError>
 }
 
 export const validateObject = (
@@ -80,6 +82,13 @@ const validateForType = (typeDefinition : TypeDefinition, key : string, objectTo
       [{ path: `${cumulativePath}${key}`, error: `Enum values not respected: ["${validValues.join('", "')}"] - got <${objectToValidate[key]}>` }],
       errors
     );
+    
+    return;
+  }
+
+  const CustomTypesList = Object.values(CUSTOM_TYPES);
+  if (CustomTypesList.includes(typeDefinition.type)) {
+    errors.push(...customTypesValidations[typeDefinition.type](objectToValidate[key], `${cumulativePath}${key}`).errors);
   }
 }
 
