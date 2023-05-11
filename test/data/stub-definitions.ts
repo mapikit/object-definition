@@ -48,3 +48,11 @@ export const stubDefinitionEnum : ObjectDefinition = {
     subtype: [ "propName1", "abcd", "test" ]
   }
 }
+
+export const stubDefinitionFunction : ObjectDefinition = {
+  "funcProp": {
+    type: "function",
+    input: { aProp: { type: "string" } },
+    output: { outputProp: { type: "boolean" } }
+  }
+}

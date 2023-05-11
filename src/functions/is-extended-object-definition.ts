@@ -13,11 +13,11 @@ export function isExtendedObjectDefinition (input : object, extendedKeysAndTypes
   const typeDefinitions = Object.values(input);
 
   typeDefinitions.forEach((typeDefinition) => {
-    isTypeDefinition(typeDefinition, extendedKeysAndTypes);
+    isExtendedTypeDefinition(typeDefinition, extendedKeysAndTypes);
   })
 }
 
-function isTypeDefinition<T> (input : object, extendedKeysAndTypes : Array<{key : string, type : string}>)
+function isExtendedTypeDefinition<T> (input : object, extendedKeysAndTypes : Array<{key : string, type : string}>)
   : asserts input is TypeDefinition<T> {
   const validNonReferencialTypes = [
     "object",

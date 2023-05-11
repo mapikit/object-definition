@@ -1,6 +1,7 @@
 import { error, highlight } from "../chalk-formatting.js";
-import { ObjectDefinition, TypeDefinition } from "../object-definition-type.js";
+import { ObjectDefinition, TypeDefinition, TypeDefinitionUnion } from "../object-definition-type.js";
 import { Errors } from "../errors.js";
+import { CUSTOM_TYPES } from "../custom-types.js";
 
 export function isObjectDefinition (input : object) : asserts input is ObjectDefinition {
   if (typeof input !== "object" || Array.isArray(input)) {
@@ -16,6 +17,12 @@ export function isObjectDefinition (input : object) : asserts input is ObjectDef
   })
 }
 
+function isTypeDefinitionUnion (input : Array<object>) : asserts input is TypeDefinitionUnion {
+  for (let inputType of input) {
+    isTypeDefinition(inputType)
+  }
+}
+
 export function isTypeDefinition (input : object) : asserts input is TypeDefinition {
   const validNonReferencialTypes = [
     "object",
@@ -23,17 +30,22 @@ export function isTypeDefinition (input : object) : asserts input is TypeDefinit
     "string",
     "number",
     "boolean",
-    "function",
     "cloudedObject",
     "date"
   ];
 
   const validEspecialTypes = [
     "any",
-    "enum"
+    "enum",
+    "function"
   ]
 
-  if (typeof input !== "object" || Array.isArray(input)) {
+  if (Array.isArray(input)) {
+    isTypeDefinitionUnion(input);
+    return;
+  }
+
+  if (typeof input !== "object") {
     throw Error(error(Errors.WrongTypeObject) + ` - ${input}`);
   }
 
@@ -41,8 +53,8 @@ export function isTypeDefinition (input : object) : asserts input is TypeDefinit
     throw Error(error(Errors.TypeNotString + ` - ${input["type"]}`));
   }
 
-  if (input["type"][0] !== "$") {
-
+  const customTypeValues = Object.values(CUSTOM_TYPES);
+  if (!customTypeValues.includes(input["type"])) {
     if (![...validNonReferencialTypes, ...validEspecialTypes].includes(input["type"])) {
       throw Error(error(Errors.UnknownType) + ` - "${highlight(input["type"])}"`);
     }
@@ -52,7 +64,7 @@ export function isTypeDefinition (input : object) : asserts input is TypeDefinit
     throw Error(error(Errors.RequiredNotBoolean + ` - ${input["required"]}`));
   }
 
-  const deepObjectTypes = ["object", "array", "enum"];
+  const deepObjectTypes = ["object", "array", "enum", "function"];
   if (deepObjectTypes.includes(input["type"])) {
     if (input["type"] === "object") {
       if (typeof input["subtype"] !== "object" || Array.isArray(input["subtype"])) {
@@ -74,6 +86,12 @@ export function isTypeDefinition (input : object) : asserts input is TypeDefinit
         }
       })
 
+      return;
+    }
+
+    if (input["type"] === "function") {
+      isObjectDefinition(input["input"]);
+      isObjectDefinition(input["output"]);
       return;
     }
 

@@ -1,7 +1,8 @@
 import { expect } from "chai";
 import { isObjectDefinition } from "../src/functions/is-object-definition.js";
 import { validateObject } from "../src/functions/validate-object.js";
-import { stubDefinition1, stubDefinition2, stubDefinitionEnum } from "./data/stub-definitions.js";
+import { stubDefinition1, stubDefinition2, stubDefinitionEnum, stubDefinitionFunction } from "./data/stub-definitions.js";
+import { ObjectDefinition } from "../src/object-definition-type.js";
 
 describe("Arrays", () => {
   it("Arrays of ANY should not be valid", () => {
@@ -139,5 +140,68 @@ describe("General", () => {
     const validation = () => isObjectDefinition(stubDefinitionEnum);
 
     expect(validation).to.not.throw();
-  })
+  });
+  it("Passes Stub3 (Functions)", () => {
+    const validation = () => isObjectDefinition(stubDefinitionFunction);
+
+    isObjectDefinition(stubDefinitionFunction)
+
+    expect(validation).to.not.throw();
+  });
 })
+
+describe("Type Unions", () => {
+  it("Validates correctly a valid shallow type union", () => {
+    const unionObjDef = {
+      prop: [
+        { type: "string" },
+        { type: "number" }
+      ]
+    };
+
+    const validation = () => isObjectDefinition(unionObjDef)
+
+    expect(validation).to.not.throw();
+  })
+  it("Validates correctly a valid deep type union", () => {
+    const unionObjDef = {
+      deepProp: {
+        type: "array", subtype: {
+          inner: [
+            { type: "string", required: false },
+            { type: "object", subtype: {
+              evenInnerer: { type: "boolean" }
+            } }
+          ]
+        } 
+      }
+    };
+
+    // TODO: Enable custom validators
+    const schemaObjDef : ObjectDefinition = {
+      "format": { type: "__ObjDef__", required: true },
+      "2": [{ type: "nullish", required: true }, { type: "string", required: true }], // Null or undefined or string
+    }
+
+    const validation = () => isObjectDefinition(unionObjDef)
+
+    expect(validation).to.not.throw();
+  })
+
+  it("Validates an INVALID deep type union", () => {
+    const unionObjDef = {
+      deepProp: {
+        type: "array", subtype: {
+          inner: [
+            { type: "string", required: false },
+            { element: { type: "string" } }
+          ]
+        } 
+      }
+    };
+
+    const validation = () => isObjectDefinition(unionObjDef)
+
+    expect(validation).to.throw();
+  })
+});

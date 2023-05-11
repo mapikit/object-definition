@@ -1,18 +1,26 @@
 export type AcceptedTypes = TypeDefinitionFlat["type"] | TypeDefinitionDeep["type"];
 
 export type TypeDefinition<T = {}> = TypeDefinitionFlat & T | TypeDefinitionDeep & T
-  | TypeDefinitionEnum & T | TypeDefinitionEspecial & T;
+  | TypeDefinitionEnum & T | TypeDefinitionEspecial & T | TypeDefinitionExecutable & T;
 
-export type ObjectDefinition<T = {}> = Record<string, TypeDefinition<T>>;
+export type ObjectDefinition<T = {}> = Record<string, TypeDefinition<T> | TypeDefinitionUnion<T>>;
+
+export type TypeDefinitionUnion<T = {}> = Array<TypeDefinition<T>>
 
 export interface TypeDefinitionFlat {
-  type : "string" | "function" | "number" | "boolean" | "date" | "cloudedObject" | string;
+  type : "string" | "number" | "boolean" | "date" | "cloudedObject" | string;
   required ?: boolean;
 }
 
 export interface TypeDefinitionEspecial {
   type : "any";
   required ?: boolean;
+}
+
+export interface TypeDefinitionExecutable {
+  type : "function";
+  input : ObjectDefinition;
+  output : ObjectDefinition;
 }
 
 export interface TypeDefinitionDeep {
