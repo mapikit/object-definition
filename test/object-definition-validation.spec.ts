@@ -221,7 +221,7 @@ describe("Validation of objects against their type definitions", () => {
     expect(result.errors[1].path).to.be.equal("key.deepFormat");
   });
 
-  describe.only("Custom Type Validation + Type Union", () => {
+  describe("Custom Type Validation + Type Union", () => {
     const definition : ObjectDefinition = {
       key: { "type": "object", subtype: {
         deepFormat: [{
@@ -285,7 +285,7 @@ describe("Validation of objects against their type definitions", () => {
 });
 
 describe("Type Union validation", () => {
-  it("Shallow Type union validation", (() => {
+  it("Shallow Type union validation", () => {
     const unionObjDef : ObjectDefinition = {
       prop: [
         { type: "string" },
@@ -304,5 +304,19 @@ describe("Type Union validation", () => {
       errors.set(index, validateObject(obj, unionObjDef).errors)
     });
     expect(errors.get(2)[0].path).to.be.equal('prop')
-  }))
+  });
+  it('Deep complex type union validation', () => {
+    // const unionObjDef : ObjectDefinition = {
+    //   arrayProp: { type: "array", subtype: {
+    //     item: [
+    //       { "type": "enum", subtype: [ "a", "b", "z" ] },
+    //       { "type": "number" },
+    //     ]
+    //   }}
+    // };
+
+    // const object = { arrayProp: [{ item: 2 }, { item: 42 }, { item: "a" }, { item: false }] }
+
+    // const errors = validateObject(object, unionObjDef)
+  })
 })

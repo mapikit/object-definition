@@ -27,6 +27,23 @@ const validateForType = (typeDefinition : TypeDefinition, key : string, objectTo
 
   if (typeDefinition.type === "object") {
     const subtype = (typeDefinition as TypeDefinitionDeep).subtype as ObjectDefinition;
+    const property = objectToValidate[key];
+    const isObject = typeof property === "object" && !Array.isArray(property);
+
+    if (typeDefinition.required && typeof property === "undefined") {
+      errors.push({ path: `${cumulativePath}${key}`, error: `Type not respected: ${typeDefinition.type} - got <${typeof objectToValidate[key]}>` });
+      return;
+    }
+
+    if (!!typeDefinition.required === false && typeof property === "undefined") {
+      return;
+    }
+
+    if (!isObject) {
+      errors.push({ path: `${cumulativePath}${key}`, error: `Type not respected: ${typeDefinition.type} - got <${typeof objectToValidate[key]}>` });
+      return;
+    }
+
     const computedResult = validationObjectCycle(objectToValidate[key], subtype, `${cumulativePath}${key}.`).errors;
     encapsulateRequire(
       objectToValidate[key],
