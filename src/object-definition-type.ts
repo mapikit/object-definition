@@ -21,6 +21,7 @@ export interface TypeDefinitionExecutable {
   type : "function";
   input : ObjectDefinition;
   output : ObjectDefinition;
+  required ?: boolean;
 }
 
 export interface TypeDefinitionDeep {

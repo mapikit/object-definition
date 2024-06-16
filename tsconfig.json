@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "module": "ES2020",
+    "module": "ESNext",
     "esModuleInterop": true,
     "declaration": true,
     "target": "ES2020",
     "lib": ["es6", "es2017"],
     "types": ["node", "mocha"],
-    "moduleResolution": "node16",
+    "moduleResolution": "Bundler",
     "noImplicitAny": false,
     "sourceMap": true,
     "outDir": "dist",
